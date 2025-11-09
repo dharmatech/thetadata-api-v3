@@ -4,10 +4,12 @@ from thetadata_api_v3.cached.caching import CACHE_DIR
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
 
-def option_history_trade_quote(date, symbol, expiration, other_params={}):
+def option_history_trade_quote(date: str, symbol: str, expiration: str, other_params: dict = None) -> pd.DataFrame:
     """
     Wrapper for option_history_trade_quote that uses a .pkl cache.
     """
+    if other_params is None:
+        other_params = {}
 
     diagnostics = False
 
@@ -42,6 +44,8 @@ def option_history_trade_quote(date, symbol, expiration, other_params={}):
     else:
         if not is_today_during_market_hours:
             print('CM', end=' ', flush=True)
+        else:
+            print('Market hours. Skipping cache.', end=' ', flush=True)
 
     df = api_module.option_history_trade_quote(date, symbol, expiration, other_params=other_params)
     
